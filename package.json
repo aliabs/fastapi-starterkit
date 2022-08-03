@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Starter Kit for FastAPI",
   "directories": {
-    "test": "tests"
+    "test": "e2e"
   },
   "scripts": {
     "start": "uvicorn app.main:application --reload",

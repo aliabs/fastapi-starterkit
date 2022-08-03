@@ -1,29 +1,31 @@
 # Starter Kit for FastAPI on Google App Engine
 
 Starter project template for running a FastAPI-based application on
-Google App Engine Standard Python 3 Runtime.
+Google Cloud Platform
 
 ## Scope of this starter kit
 
 The scope of this starter kit is fairly small, punting on the front-end UI implementation
-to avoid bloating the code and keeping the list of opinionated choices fairly minimal.
+to avoid bloating the code and keeping the list of opinionated choices fairly minimal. And utilize GCP services for having a fast production environment deployment
 
 ### In scope and already implemented
 
 This starter kit includes the following:
 
 - Production-ready App Engine configuration (in `app.yaml`) with FastAPI ASGI app running via gunicorn and uvicorn
-- Continuous Integration (CI) workflow via GitHub Actions (see `.github/workflows/continous-integration.yaml`)
+- Continuous Integration (CI) workflow via Cloud Build for App Engine
+- Continuous deployment (CD) workflow via Cloud Build for App Engine
 - Unit tests via pytest (see `tests/test_api.py`)
+- Sample integration with Cloud Datastore or Cloud Firestore 
+- Sample auth integration
 
 ### Not yet implemented
 
 The starter kit does not yet include the following (PRs are welcome):
 
-- Continous deployment (CD) workflow via GitHub Actions, leveraging https://github.com/GoogleCloudPlatform/github-actions
+- Continuous Integration (CI) workflow via Cloud Build for CLoud Run, CLoud functions
+- Continuous deployment (CD) workflow via Cloud Build for Cloud Run, Cloud functions
 - Acceptance/smoke tests hitting API endpoints on App Engine post-deployment
-- Sample integration with Cloud Datastore or Cloud Firestore
-- Sample auth integration
 
 
 ## Technologies
@@ -31,6 +33,10 @@ The starter kit does not yet include the following (PRs are welcome):
 - [FastAPI](https://fastapi.tiangolo.com/) - High-performance Python [ASGI](https://asgi.readthedocs.io/en/latest/) web framework
 - [pytest](https://docs.pytest.org/en/latest/) - Modern testing framework for Python
 - [uvicorn](https://www.uvicorn.org) - ASGI server (for local development and production, runs cross-platform)
+- [AppEngine](https://cloud.google.com/appengine/docs/standard/python3/an-overview-of-app-engine) - App Engine standard environment makes it easy to build and deploy an application that runs reliably under heavy load and with large amounts of data. Your application runs within its own secure, reliable environment that is independent of the hardware, operating system, or physical location of the server.
+- [Cloud Source Repositories](https://cloud.google.com/source-repositories/docs/features) - Cloud Source Repositories are fully featured, private Git repositories hosted on Google Cloud
+- [Cloud Build](https://cloud.google.com/build/docs/overview) - Build, test, and deploy on Google Cloud serverless CI/CD platform.
+- [Firestore](https://cloud.google.com/firestore) -  Easily develop rich applications using a fully managed, scalable, and serverless document database.
 
 
 ## Development Setup Requirements
@@ -101,14 +107,14 @@ The tests are run via `pytest`, with the configuration file at `pytest.ini`.
 Ensure the proper dependencies are installed via `pip install -r requirements-test.txt` prior to running the tests.
 
 ```bash
-# Run all tests
+# Run all e2e
 pytest
 
-# Alternate method of running tests via npm
+# Alternate method of running e2e via npm
 npm test
 
 # Run only a particular test
-pytest tests/test_api.py::test_hello
+pytest e2e/test_api.py::test_hello
 
 ```
 
@@ -135,7 +141,7 @@ gcloud app deploy
 ```
 
 
-## CI/CD
+## CI/CD - App Engine
 
 A GitHub Actions continuous integration (CI) workflow is provided in the `.github/workflows` folder, running
 unit tests when a non-master branch is pushed to GitHub.
@@ -154,9 +160,3 @@ the repo's master branch:
 A Continuous Deployment (CD) pipeline via GitHub Actions will likely land in this starter kit to complement the
 CI workflow noted above.
 
-
-## Related Projects
-
-### Starter Kit for Flask on Google App Engine
-
-See https://github.com/kamalgill/cloud-starterkit-flask-appengine

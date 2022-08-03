@@ -1,0 +1,49 @@
+steps:
+#Deploys the current code to a test version on app engine without promoting substitutions:
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - app
+  - deploy
+  - app.yaml
+  - --version=test
+  - --no-promote
+
+#Runs e2e e2e against the test version on app engine
+- name: "ubuntu"
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    apt-get update && apt-get install make python python-pip -y
+    pip install requests
+    ./runtests.bash
+
+#Deploys the current code to a new version on app engine promoted to server production
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+    - app
+    - deploy
+    - app.yaml
+
+
+### Deploy to Cloud Functions
+#- name: 'gcr.io/cloud-builders/gcloud'
+#  args:
+#    - functions
+#    - deploy
+#    - [FUNCTION_NAME]
+#    - --source=.
+#    - --trigger-http
+
+#Deploy to Firebase
+# Also requires prereqs at cloud-build doc configuring build build test deploy
+# Steps:
+#- name: 'gcr.io/cloud-builders/npm'
+#  args: ['install']
+#- name: 'gcr.io/cloud-builders/npm'
+#  args: ['test']
+#- name: 'gcr.io/cloud-builders/npm'
+#  args: ['run', 'build.prod']
+#- name: 'gcr.io/${_PROJECT_ID}/firebase'
+#  dir: 'packages/frontend/deployment/staging'
+#  args: ['deploy', '--project=${_PROJECT_ID}', '--only=hosting']
