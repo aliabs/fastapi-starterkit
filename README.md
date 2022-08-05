@@ -1,4 +1,4 @@
-# Starter Kit for FastAPI on Google App Engine
+# Starter Kit for FastAPI on GCP
 
 Starter project template for running a FastAPI-based application on
 Google Cloud Platform
@@ -142,21 +142,104 @@ gcloud app deploy
 
 
 ## CI/CD - App Engine
+### Push a local repository into Cloud Source Repositories
+1. Ensure that the [gcloud CLI is installed](https://cloud.google.com/source-repositories/docs/authentication#authenticate-using-the-cloud-sdk) on your machine and setup the config using
+```bash
+gcloud init
+```
+2. Open a terminal window.
+3. If you're using Windows, enter the following command:
+```bash
+gcloud init && git config credential.helper gcloud.cmd
+```
+If you're using Linux or macOS, enter the following command:
+```bash
+gcloud init && git config credential.helper gcloud.sh
+```
+4. Add your local repository as a remote:
+```bash
+git remote add google \
+https://source.developers.google.com/p/[PROJECT_NAME]/r/[REPO_NAME]
+```
+Where:
+[PROJECT_NAME] is the name of your Google Cloud project.
+[REPO_NAME] is the name of your repository.
+5. Push your code to Cloud Source Repositories:
+```bash
+git push --all google
+```
 
-A GitHub Actions continuous integration (CI) workflow is provided in the `.github/workflows` folder, running
-unit tests when a non-master branch is pushed to GitHub.
 
-Perform the following steps to configure the CI workflow to be enforced on GitHub pull requests (PRs) against
-the repo's master branch:
+###Use the repository as a remote
+####Google Cloud repositories are fully featured Git repositories. You can use the standard set of Git commands to interact with these repositories, including push, pull, clone, and log.
 
-1. In the GitHub UI for your forked repo, click the "Settings" tab at top and click the "Branches" nav item at left.
-2. In the "Branch protection rules" section, click the Add rule button if there is no rule for the master branch.
-3. If there is a protection rule for the master branch, click the "Edit" button for that rule.
-4. Enable the checkbox for the "Require status checks to pass before merging".
-5. If "Run unit tests" is a visible option for the "Status checks found in the last week for this repository", use that.
-6. If the "Run unit tests" option isn't displayed yet, it will display after a non-master branch has been pushed.
-7. Create a branch with a test commit to confirm the above has enabled status checks for PRs in your repo.
+####Push to a Google Cloud repository
+To push from your local Git repository to a Google Cloud repository, enter the following command:
+```bash
+git push google master
+```
+####Pull from a Google Cloud repository
+To pull from a Google Cloud repository to your local Git repository, enter the following command:
+```bash
+git pull google master
+```
 
-A Continuous Deployment (CD) pipeline via GitHub Actions will likely land in this starter kit to complement the
-CI workflow noted above.
+####View the commit history of a Google Cloud repository
+To view the commit history, enter the following command:
+```bash
+git log google/master
+```
+###Use the repository with branches
+####Whenver working on features or changing code make sure you are not on the master (main) and create a branch
+####Create a new branch
+To create a new branch, enter the following commend (New branch will not change the status)
+```bash
+git branch mybranch
+```
+####Change Status
+To switch the branch, use the following commend (Make sure you committed any pending changes)
+```bash
+git git checkout mybranch
+```
+####Merge branch
+To merge branch, while you are in master use the following commend
+```bash
+git git merge mybranch
+```
 
+#gcloud Config Cheatsheet
+###List
+```bash
+cloud config configurations list
+```
+###Create dev configuration
+```bash
+cloud config configurations create dev
+cloud config set project example-dev-337717
+cloud config set account tung@boltops.com
+cloud config set compute/region us-centrall
+cloud config set compute/zone us-centrall-b
+```
+###Create prod configuration
+```bash
+cloud config configurations create prod
+cloud config set project example-prod-337717
+cloud config set account tung@boltops.com
+cloud config set compute/region us-centrall
+cloud config set compute/zone us-centrall-b
+```
+###Activate different configurations
+```bash
+cloud config configurations activate dev
+cloud config configurations activate prod
+```
+## Config Files Themselves
+```bash
+cat ~/.config/gcloud/active_config
+cat ~/.config/gcloud/configurations/config_dev
+cat ~/.config/gcloud/configurations/config_prod
+```
+## Test
+```bash
+cloud compute instances list|
+```
