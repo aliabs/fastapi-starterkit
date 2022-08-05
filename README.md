@@ -17,7 +17,7 @@ This starter kit includes the following:
 - Continuous deployment (CD) workflow via Cloud Build for App Engine
 - Unit tests via pytest (see `tests/test_api.py`)
 - Sample integration with Cloud Datastore or Cloud Firestore 
-- Sample auth integration
+- IAP auth integration
 
 ### Not yet implemented
 
@@ -141,8 +141,29 @@ gcloud app deploy
 ```
 
 
-## CI/CD - App Engine
-### Push a local repository into Cloud Source Repositories
+# CI/CD - App Engine
+
+##Cloning a repository  
+This topic describes how to clone the contents of a repository from Cloud Source Repositories to your local machine using the gcloud CLI
+
+1. Ensure that the gcloud CLI is installed on your local system.
+In a terminal window, provide your authentication credentials:
+```bash
+gcloud init 
+```
+2. Clone your repository:
+```bash
+gcloud source repos clone [REPO_NAME] --project=[PROJECT_NAME]
+```
+Where:
+[REPO_NAME] is the name of your repository.
+[PROJECT_NAME] is the name of your Google Cloud project.
+For example:
+```bash
+gcloud source repos clone test-repo --project=example-project
+```
+
+##Push a local repository into Cloud Source Repositories
 1. Ensure that the [gcloud CLI is installed](https://cloud.google.com/source-repositories/docs/authentication#authenticate-using-the-cloud-sdk) on your machine and setup the config using
 ```bash
 gcloud init
@@ -169,8 +190,7 @@ Where:
 git push --all google
 ```
 
-
-###Use the repository as a remote
+##Use the repository as a remote
 ####Google Cloud repositories are fully featured Git repositories. You can use the standard set of Git commands to interact with these repositories, including push, pull, clone, and log.
 
 ####Push to a Google Cloud repository
@@ -206,6 +226,31 @@ To merge branch, while you are in master use the following commend
 ```bash
 git git merge mybranch
 ```
+#CI using Cloud Build
+To create a trigger if your source code is in Cloud Source Repositories:
+```bash
+gcloud beta builds triggers create cloud-source-repositories \
+    --repo=REPO_NAME \
+    --branch-pattern=BRANCH_PATTERN \ # or --tag-pattern=TAG_PATTERN
+    --build-config=BUILD_CONFIG_FILE \
+    --service-account=SERVICE_ACCOUNT \
+    --require-approval
+```
+Where:
+- REPO_NAME is the name of your repository.
+- BRANCH_PATTERN is the branch name in your repository to invoke the build on.
+- TAG_PATTERN is the tag name in your repository to invoke the build on.
+- BUILD_CONFIG_FILE is the path to your build configuration file.
+- SERVICE_ACCOUNT is the email associated with your service account. If you don't include this flag, the default Cloud Build service account is used.
+-  --require-approval is _Optional_ the flag to include to configure your trigger to require approval.
+For a complete list of flags, see the [`gcloud`reference for how to create triggers for Cloud Source Repositories](https://cloud.google.com/sdk/gcloud/reference/beta/builds/triggers/create/cloud-source-repositories).
+
+**Note: Only the service account specified in the gcloud beta build triggers create command is used for builds invoked with triggers. Build triggers ignore the service account specified in the build config file.**
+
+####See [Resubmitting a build for approval, Update, Disable, Delete](https://cloud.google.com/build/docs/automating-builds/create-manage-triggers#resubmitting_a_build_for_approval)
+
+#CD using Cloud Build
+To create a deployment pipeline from build trigger create a `cloudbuild.yaml`that do unit and integration tests, and if passed deploy to production
 
 #gcloud Config Cheatsheet
 ###List
@@ -233,7 +278,7 @@ cloud config set compute/zone us-centrall-b
 cloud config configurations activate dev
 cloud config configurations activate prod
 ```
-## Config Files Themselves
+###Config Files Themselves
 ```bash
 cat ~/.config/gcloud/active_config
 cat ~/.config/gcloud/configurations/config_dev
