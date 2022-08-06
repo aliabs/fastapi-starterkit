@@ -22,12 +22,12 @@ steps:
 #Deploys the current code to a new version on app engine promoted to server production
 - name: 'gcr.io/cloud-builders/gcloud'
   args:
-    - gcloud app services set-traffic auth --splits stagging=1
-    - gcloud app services delete auth --version=test
     - app
     - deploy
     - app.yaml
     - --version=stagging
+    - gcloud app services set-traffic auth --splits stagging=1
+    - gcloud app services delete auth --version=test
 
 
 
