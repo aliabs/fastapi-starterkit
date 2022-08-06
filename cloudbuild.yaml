@@ -22,7 +22,7 @@ steps:
 #Deploys the current code to a new version on app engine promoted to server production
 - name: 'gcr.io/cloud-builders/gcloud'
   args:
-    - cloud app services auth --version=test
+    - gcloud app services delete auth --version=test
     - app
     - deploy
     - app.yaml
