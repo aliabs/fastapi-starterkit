@@ -1,4 +1,3 @@
-
 # gcloud configuration
 gcloud config configurations create atn-web-api-dev
 gcloud config set project atn-web-app-dev
@@ -26,22 +25,36 @@ PROJECT_NUMBER=$(gcloud projects list \
   --filter="projectId=${PROJECT_ID}")
 
 gcloud iam service-accounts add-iam-policy-binding \
-    ${PROJECT_ID}@appspot.gserviceaccount.com \
-    --member=serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-    --role=roles/iam.serviceAccountUser \
-    --project=${PROJECT_ID}
+  ${PROJECT_ID}@appspot.gserviceaccount.com \
+  --member=serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
+  --role=roles/iam.serviceAccountUser \
+  --project=${PROJECT_ID}
 
-gcloud iam service-accounts add-iam-policy-binding ${PROJECT_ID}@appspot.gserviceaccount.com \
-    --member=serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com \
-    --role=roles/appengine.amdin
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
+  --role=roles/appengine.deployer
 
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
+  --role=roles/appengine.deployer
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
+  --role=roles/appengine.serviceAdmin
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
+  --role=roles/compute.storageAdmin
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
+  --role=roles/cloudbuild.builds.builder
 
 # create trigger
 gcloud beta builds triggers create cloud-source-repositories \
-    --name=tr-atn-web-api-dev \
-    --repo=atn-web-app-dev \
-    --branch-pattern=BRANCH_PATTERN
-    --build-config=cloudbuild.yaml
+  --name=tr-atn-web-api-dev \
+  --repo=atn-web-app-dev \
+  --branch-pattern=BRANCH_PATTERN
+--build-config=cloudbuild.yaml
 #    --service-account=SERVICE_ACCOUNT \
 #    --require-approval
-
