@@ -36,15 +36,15 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
 
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
-  --role=roles/appengine.deployer
-
-gcloud projects add-iam-policy-binding ${PROJECT_ID} \
-  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
   --role=roles/appengine.serviceAdmin
 
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
   --role=roles/compute.storageAdmin
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
+  --role=roles/cloudbuild.builds.builder
 
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
