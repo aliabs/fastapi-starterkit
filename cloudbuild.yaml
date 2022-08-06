@@ -15,7 +15,7 @@ steps:
   - '-c'
   - |
     apt-get update && apt-get install make python3 python3-pip -y
-    pip install requests
+    pip3 install requests
     ./runtests.bash
 
 #Deploys the current code to a new version on app engine promoted to server production
