@@ -239,6 +239,7 @@ To merge branch, while you are in master use the following commend
 git git merge BRANCH_NAME
 ```
 # CI using Cloud Build
+Make sure that cloud build service account have App Engine Deployer (roles/appengine.deployer) role.
 To create a trigger if your source code is in Cloud Source Repositories:
 ```bash
 gcloud beta builds triggers create cloud-source-repositories \
