@@ -35,7 +35,8 @@ steps:
     - services
     - set-traffic
     - auth
-    - --splits stagging=1
+    - --splits
+    - stagging=1
 #Delete the test version and set the traffic to the stagging version
 - name: 'gcr.io/cloud-builders/gcloud'
   args:
