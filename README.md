@@ -16,13 +16,13 @@ This starter kit includes the following:
 - Continuous Integration (CI) workflow via Cloud Build for App Engine
 - Continuous deployment (CD) workflow via Cloud Build for App Engine
 - Unit tests via pytest (see `tests/test_api.py`)
-- Sample integration with Cloud Datastore or Cloud Firestore 
 - IAP auth integration
 
 ### Not yet implemented
 
 The starter kit does not yet include the following (PRs are welcome):
 
+- Database integration via [Cloud Datastore](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/main/firestore), [Cloud Storage](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/main/appengine/standard_python3/bundled-services/blobstore), and [BigQuery](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/main/appengine/standard_python3/bigquery)
 - Continuous Integration (CI) workflow via Cloud Build for CLoud Run, CLoud functions
 - Continuous deployment (CD) workflow via Cloud Build for Cloud Run, Cloud functions
 - Acceptance/smoke tests hitting API endpoints on App Engine post-deployment
@@ -143,7 +143,7 @@ gcloud app deploy
 
 # CI/CD - App Engine
 
-##Cloning a repository  
+## Cloning a repository  
 This topic describes how to clone the contents of a repository from Cloud Source Repositories to your local machine using the gcloud CLI
 
 1. Ensure that the gcloud CLI is installed on your local system.
@@ -163,7 +163,7 @@ For example:
 gcloud source repos clone test-repo --project=example-project
 ```
 
-##Push a local repository into Cloud Source Repositories
+## Push a local repository into Cloud Source Repositories
 1. Ensure that the [gcloud CLI is installed](https://cloud.google.com/source-repositories/docs/authentication#authenticate-using-the-cloud-sdk) on your machine and setup the config using
 ```bash
 gcloud init
@@ -190,43 +190,55 @@ Where:
 git push --all google
 ```
 
-##Use the repository as a remote
-####Google Cloud repositories are fully featured Git repositories. You can use the standard set of Git commands to interact with these repositories, including push, pull, clone, and log.
+## Use the repository as a remote
+#### Google Cloud repositories are fully featured Git repositories. You can use the standard set of Git commands to interact with these repositories, including push, pull, clone, and log.
 
-####Push to a Google Cloud repository
+#### Push to a Google Cloud repository
 To push from your local Git repository to a Google Cloud repository, enter the following command:
 ```bash
 git push google master
 ```
-####Pull from a Google Cloud repository
+#### Pull from a Google Cloud repository
 To pull from a Google Cloud repository to your local Git repository, enter the following command:
 ```bash
 git pull google master
 ```
 
-####View the commit history of a Google Cloud repository
+#### View the commit history of a Google Cloud repository
 To view the commit history, enter the following command:
 ```bash
 git log google/master
 ```
-###Use the repository with branches
-####Whenver working on features or changing code make sure you are not on the master (main) and create a branch
-####Create a new branch
+### Use the repository with branches
+#### Whenever working on features or changing code make sure you are not on the master (main) and create a branch
+#### Create a new branch
 To create a new branch, enter the following commend (New branch will not change the status)
 ```bash
-git branch mybranch
+git branch BRANCH_NAME
 ```
-####Change Status
+#### Change Status
 To switch the branch, use the following commend (Make sure you committed any pending changes)
 ```bash
-git git checkout mybranch
+git commit -m 'commit msg'
+git git checkout BRANCH_NAME
 ```
-####Merge branch
+### Commit Messages Guide
+- build: Changes that affect the build system or external dependencies (example scopes: app.yaml, npm, Docker)
+- ci: Changes to our CI configuration files and scripts 
+- cd: Changes to our CD configuration files and scripts
+- docs: Documentation only changes
+- feat: A new feature
+- fix: A bug fix
+- perf: A code change that improves performance
+- refactor: A code change that neither fixes a bug nor adds a feature
+- style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- test: Adding missing tests or correcting existing tests
+#### Merge branch
 To merge branch, while you are in master use the following commend
 ```bash
-git git merge mybranch
+git git merge BRANCH_NAME
 ```
-#CI using Cloud Build
+# CI using Cloud Build
 To create a trigger if your source code is in Cloud Source Repositories:
 ```bash
 gcloud beta builds triggers create cloud-source-repositories \
@@ -247,38 +259,38 @@ For a complete list of flags, see the [`gcloud`reference for how to create trigg
 
 **Note: Only the service account specified in the gcloud beta build triggers create command is used for builds invoked with triggers. Build triggers ignore the service account specified in the build config file.**
 
-####See [Resubmitting a build for approval, Update, Disable, Delete](https://cloud.google.com/build/docs/automating-builds/create-manage-triggers#resubmitting_a_build_for_approval)
+#### See [Resubmitting a build for approval, Update, Disable, Delete](https://cloud.google.com/build/docs/automating-builds/create-manage-triggers#resubmitting_a_build_for_approval)
 
-#CD using Cloud Build
+# CD using Cloud Build
 To create a deployment pipeline from build trigger create a `cloudbuild.yaml`that do unit and integration tests, and if passed deploy to production
 
-#gcloud Config Cheatsheet
-###List
+# gCloud Config Cheatsheet
+### List
 ```bash
-cloud config configurations list
+gcloud config configurations list
 ```
-###Create dev configuration
+### Create dev configuration
 ```bash
-cloud config configurations create dev
-cloud config set project example-dev-337717
-cloud config set account tung@boltops.com
-cloud config set compute/region us-centrall
-cloud config set compute/zone us-centrall-b
+gcloud config configurations create dev
+gcloud config set project example-dev-337717
+gcloud config set account tung@boltops.com
+gcloud config set compute/region us-centrall
+gcloud config set compute/zone us-centrall-b
 ```
-###Create prod configuration
+### Create prod configuration
 ```bash
-cloud config configurations create prod
-cloud config set project example-prod-337717
-cloud config set account tung@boltops.com
-cloud config set compute/region us-centrall
-cloud config set compute/zone us-centrall-b
+gcloud config configurations create prod
+gcloud config set project example-prod-337717
+gcloud config set account tung@boltops.com
+gcloud config set compute/region us-centrall
+gcloud config set compute/zone us-centrall-b
 ```
-###Activate different configurations
+### Activate different configurations
 ```bash
-cloud config configurations activate dev
-cloud config configurations activate prod
+gcloud config configurations activate dev
+gcloud config configurations activate prod
 ```
-###Config Files Themselves
+### Config Files Themselves
 ```bash
 cat ~/.config/gcloud/active_config
 cat ~/.config/gcloud/configurations/config_dev
@@ -286,5 +298,5 @@ cat ~/.config/gcloud/configurations/config_prod
 ```
 ## Test
 ```bash
-cloud compute instances list|
+gclouddocs compute instances list
 ```
