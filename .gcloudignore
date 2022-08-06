@@ -12,10 +12,6 @@
 # below:
 .git
 .gitignore
-scripts.sh
-startup_script.sh
-README.md
-LICENSE
 
 # Python pycache:
 __pycache__/
