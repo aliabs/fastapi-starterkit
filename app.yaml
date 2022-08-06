@@ -6,6 +6,7 @@
 runtime: python37
 service: auth
 
+
 # Set App Engine instance class (defaults to F1)
 # See https://cloud.google.com/appengine/docs/standard/#instance_classes
 instance_class: F1
