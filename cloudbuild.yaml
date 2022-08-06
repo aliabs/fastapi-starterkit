@@ -26,8 +26,8 @@ steps:
     - deploy
     - app.yaml
     - --version=stagging
-    - gcloud app services set-traffic auth --splits stagging=1
-    - gcloud app services delete auth --version=test
+#    - gcloud app services set-traffic auth --splits stagging=1
+#    - gcloud app services delete auth --version=test
 
 
 
