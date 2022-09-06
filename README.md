@@ -220,7 +220,7 @@ git branch BRANCH_NAME
 To switch the branch, use the following commend (Make sure you committed any pending changes)
 ```bash
 git commit -m 'commit msg'
-git git checkout BRANCH_NAME
+git checkout BRANCH_NAME
 ```
 ### Commit Messages Guide
 - build: Changes that affect the build system or external dependencies (example scopes: app.yaml, npm, Docker)
@@ -236,7 +236,7 @@ git git checkout BRANCH_NAME
 #### Merge branch
 To merge branch, while you are in master use the following commend
 ```bash
-git git merge BRANCH_NAME
+git merge BRANCH_NAME
 ```
 # CI using Cloud Build
 Make sure that cloud build service account have App Engine Deployer (roles/appengine.deployer) role.
