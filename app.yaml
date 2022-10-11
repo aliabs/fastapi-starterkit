@@ -4,7 +4,7 @@
 
 # Recommended to set to Python 3.7 runtime or later
 runtime: python37
-service: auth
+service: fastapi-starterkit
 
 
 # Set App Engine instance class (defaults to F1)

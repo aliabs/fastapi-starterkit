@@ -265,6 +265,46 @@ For a complete list of flags, see the [`gcloud`reference for how to create trigg
 # CD using Cloud Build
 To create a deployment pipeline from build trigger create a `cloudbuild.yaml`that do unit and integration tests, and if passed deploy to production
 
+# Cloud Logging
+**Google Cloud** offers a product called Google Cloud Logging for logging and tracing. All log entries are collected centrally and retrieved using a custom query language.
+
+With most hosting options in the Google Cloud, the log entries are collected and processed via Fluentd. Google provides documentation for a JSON object of the optimal log entry. One of our goals would be to meet the requirements of this object.
+
+```
+pip install google-cloud-logging
+``` 
+
+In the case of Python, the Django and Flask frameworks are natively supported by the client. For both frameworks, the client converts a lot of data into the proper format, especially the severity level and the trace of the request. Django and Flask benefit from built-in framework recognition by the google client.
+
+However, FastAPI is a pretty new framework and does not have any built-in support from the logging client. 
+
+`cloud_logging/middleware`
+
+This class implements the BaseHTTPMiddleware class provided by Starlette and is mainly used to provide additional logic for all incoming requests. Starlette is shipped with FastAPI and it is the underlying ASGI framework.
+
+Essentially, two important things are done here. Firstly, essential information about the request is written into a Python dictionary. Secondly, it checks whether the previously mentioned header is available.
+
+Both pieces of information are processed and written into context variables. We use these variables later in the filter.
+
+`cloud_loggging/filter`
+
+After that, it is necessary to implement a logging filter. The following filter implements the CloudLoggingFilter provided in the Google Cloud Logging Library. We overwrite the filter method, which is called for each log entry. The main task of the filter is to append the information according to the Google Cloud Logging format to the record that was previously fetched by the middleware. The trace header still needs a little processing.
+
+`cloud_logging/setup`
+
+Last but not least, we have to make sure that the Python logger executes the desired logic. For this purpose, I have written a setup method called when the FastAPI application is started.
+
+`main`
+
+When starting the FastAPI application, adding the middleware and executing the setup method are necessary. I have decided to use Google Cloud Logging only in the production environment; locally, the standard logger is used.
+
+To see logs on [Google Console](https://console.cloud.google.com/logs)
+using the below query
+```script
+logName: "projects/{project-id}/logs/python"
+```
+# [git Cheatsheet](https://education.github.com/git-cheat-sheet-education.pdf)
+
 # gCloud Config Cheatsheet
 ### List
 ```bash

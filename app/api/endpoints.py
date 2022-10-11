@@ -3,6 +3,7 @@ Primary API route endpoints
 
 """
 from fastapi import APIRouter
+from fastapi.logger import logger
 from starlette.responses import RedirectResponse
 
 
@@ -16,6 +17,10 @@ def redirect_to_docs():
     return RedirectResponse('/redoc')
 
 
-@api_routes.get('/hello/{name}')
+@api_routes.get('api/hello/{name}')
 async def get_hello(name: str = 'world'):
+    logger.debug('DEBUG LOG')
+    logger.error('ERROR LOG')
+    logger.warning('WARNING LOG')
+    logger.info('INFO LOG')
     return dict(hello=name)
