@@ -119,15 +119,51 @@ pytest e2e/test_api.py::test_hello
 ```
 
 
-## Google Cloud Setup Instructions
-
-1. Create an App Engine Project at https://console.cloud.google.com/appengine
+## CI/CD - Google Cloud Setup Instructions on local machine
+1. Enable Cloud Functions API
 2. Download and install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/)
 3. If on Windows, run the "Google Cloud SDK Shell" application (keep option selected during SDK install)
 4. Type `gcloud init` in a terminal or in the Cloud SDK Shell (or keep option selected during install)
 5. Log in via `gcloud auth login` in the Cloud SDK Shell if necessary
 6. Set the active project (created in step 1) via `gcloud config set project PROJECT_ID`
 7. If on Windows, install the App Engine components via `gcloud components install app-engine-python`
+
+### `gcloud configurations`
+
+```bash
+gcloud config configurations list
+```
+### Create dev configuration
+```bash
+gcloud config configurations create dev
+gcloud config set project example-dev-337717
+gcloud config set account tung@boltops.com
+gcloud config set compute/region us-centrall
+gcloud config set compute/zone us-centrall-b
+```
+### Create prod configuration
+```bash
+gcloud config configurations create prod
+gcloud config set project example-prod-337717
+gcloud config set account tung@boltops.com
+gcloud config set compute/region us-centrall
+gcloud config set compute/zone us-centrall-b
+```
+### Activate different configurations
+```bash
+gcloud config configurations activate dev
+gcloud config configurations activate prod
+```
+### Config Files Themselves
+```bash
+cat ~/.config/gcloud/active_config
+cat ~/.config/gcloud/configurations/config_dev
+cat ~/.config/gcloud/configurations/config_prod
+```
+## Test
+```bash
+gcloud docs compute instances list
+```
 
 See the platform-specific Quickstart guides at https://cloud.google.com/sdk/docs/quickstarts
 
@@ -177,7 +213,12 @@ If you're using Linux or macOS, enter the following command:
 ```bash
 gcloud init && git config credential.helper gcloud.sh
 ```
-4. Add your local repository as a remote:
+4. Create the repository in Cloud Source Repositories:
+```bash
+gcloud source repos create [REPO_NAME]
+```
+
+5Add your local repository as a remote:
 ```bash
 git remote add google \
 https://source.developers.google.com/p/[PROJECT_NAME]/r/[REPO_NAME]
@@ -185,7 +226,7 @@ https://source.developers.google.com/p/[PROJECT_NAME]/r/[REPO_NAME]
 Where:
 [PROJECT_NAME] is the name of your Google Cloud project.
 [REPO_NAME] is the name of your repository.
-5. Push your code to Cloud Source Repositories:
+6Push your code to Cloud Source Repositories:
 ```bash
 git push --all google
 ```
@@ -241,25 +282,37 @@ git merge BRANCH_NAME
 # CI using Cloud Build
 Make sure that cloud build service account have App Engine Deployer (roles/appengine.deployer) role.
 To create a trigger if your source code is in Cloud Source Repositories:
+
+1. Create trigger.yaml file
 ```bash
-gcloud beta builds triggers create cloud-source-repositories \
-    --repo=REPO_NAME \
-    --branch-pattern=BRANCH_PATTERN \ # or --tag-pattern=TAG_PATTERN
-    --build-config=BUILD_CONFIG_FILE \
-    --service-account=SERVICE_ACCOUNT \
-    --require-approval
+# trigger.yaml
+filename: BUILD_CONFIG_FILE
+includedFiles:
+- FUNCTION_SUBDIRECTORY
+name: NAME
+triggerTemplate:
+  branchName: BRANCH_PATTERN
+  projectId: PROJECT_ID
+  repoName: REPO_NAME
 ```
 Where:
+- NAME is the name of your trigger.
+- FUNCTION_SUBDIRECTORY is the pattern for files changed
 - REPO_NAME is the name of your repository.
 - BRANCH_PATTERN is the branch name in your repository to invoke the build on.
 - TAG_PATTERN is the tag name in your repository to invoke the build on.
 - BUILD_CONFIG_FILE is the path to your build configuration file.
 - SERVICE_ACCOUNT is the email associated with your service account. If you don't include this flag, the default Cloud Build service account is used.
 -  --require-approval is _Optional_ the flag to include to configure your trigger to require approval.
+
 For a complete list of flags, see the [`gcloud`reference for how to create triggers for Cloud Source Repositories](https://cloud.google.com/sdk/gcloud/reference/beta/builds/triggers/create/cloud-source-repositories).
 
 **Note: Only the service account specified in the gcloud beta build triggers create command is used for builds invoked with triggers. Build triggers ignore the service account specified in the build config file.**
 
+2. and run
+```bash
+gcloud builds triggers import --source=PATH/trigger.yaml
+```
 #### See [Resubmitting a build for approval, Update, Disable, Delete](https://cloud.google.com/build/docs/automating-builds/create-manage-triggers#resubmitting_a_build_for_approval)
 
 # CD using Cloud Build
@@ -304,40 +357,3 @@ using the below query
 logName: "projects/{project-id}/logs/python"
 ```
 # [git Cheatsheet](https://education.github.com/git-cheat-sheet-education.pdf)
-
-# gCloud Config Cheatsheet
-### List
-```bash
-gcloud config configurations list
-```
-### Create dev configuration
-```bash
-gcloud config configurations create dev
-gcloud config set project example-dev-337717
-gcloud config set account tung@boltops.com
-gcloud config set compute/region us-centrall
-gcloud config set compute/zone us-centrall-b
-```
-### Create prod configuration
-```bash
-gcloud config configurations create prod
-gcloud config set project example-prod-337717
-gcloud config set account tung@boltops.com
-gcloud config set compute/region us-centrall
-gcloud config set compute/zone us-centrall-b
-```
-### Activate different configurations
-```bash
-gcloud config configurations activate dev
-gcloud config configurations activate prod
-```
-### Config Files Themselves
-```bash
-cat ~/.config/gcloud/active_config
-cat ~/.config/gcloud/configurations/config_dev
-cat ~/.config/gcloud/configurations/config_prod
-```
-## Test
-```bash
-gclouddocs compute instances list
-```
